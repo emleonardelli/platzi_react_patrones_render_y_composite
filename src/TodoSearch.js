@@ -1,9 +1,13 @@
 import React from 'react';
 import './TodoSearch.css';
 
-function TodoSearch() {
+function TodoSearch({
+  searchValue,
+  setSearchValue,
+}) {
   const onSearchValueChange = (ev) => {
-    console.log(ev.target.value);
+    setSearchValue(ev.target.value);
+    console.log(searchValue);
   }
 
   return (
@@ -11,6 +15,7 @@ function TodoSearch() {
       onChange={onSearchValueChange}
       className="TodoSearch"
       placeholder="Cebolla"
+      value={searchValue}
     />
   );
 }
