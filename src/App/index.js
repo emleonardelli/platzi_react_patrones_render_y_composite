@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppUI } from './AppUI';
 
 //const defaultTodos = [
@@ -9,24 +9,50 @@ import { AppUI } from './AppUI';
 //];
 
 function useLocalStorage(itemName, initialValue) {
-  const localStorageItem = localStorage.getItem(itemName);
-  let parsedItem;
-  if (!localStorageItem) {
-    localStorage.setItem(itemName, JSON.stringify(initialValue));
-    parsedItem = initialValue;
-  } else {
-    parsedItem = JSON.parse(localStorageItem);
-  }
-  const [item, setItem] = useState(parsedItem);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [item, setItem] = useState(initialValue);
+  useEffect(() => {
+    setTimeout(() => {
+      try {
+        const localStorageItem = localStorage.getItem(itemName);
+        let parsedItem;
+        if (!localStorageItem) {
+          localStorage.setItem(itemName, JSON.stringify(initialValue));
+          parsedItem = initialValue;
+        } else {
+          parsedItem = JSON.parse(localStorageItem);
+        }
+        setItem(parsedItem);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    }, 2000);
+  });
   const saveItem = (newItem) => {
-    localStorage.setItem(itemName, JSON.stringify(newItem));
-    setItem(newItem);
+    try {
+      localStorage.setItem(itemName, JSON.stringify(newItem));
+      setItem(newItem);
+    } catch (error) {
+      setError(error);
+    }
   }
-  return [item, saveItem];
+  return {
+    item,
+    saveItem,
+    loading,
+    error,
+  };
 }
 
 function App() {
-  const [todos, saveTodos] = useLocalStorage('TODOS_V1', []);
+  const {
+    item:todos,
+    saveItem: saveTodos,
+    loading,
+    error,
+  } = useLocalStorage('TODOS_V1', []);
   const [searchValue, setSearchValue] = useState('');
   const completedTodos = todos.filter(todo => !!todo.completed).length;
   const totalTodos = todos.length;
@@ -56,6 +82,8 @@ function App() {
 
   return (
     <AppUI
+    loading={loading}
+    error={error}
     completedTodos={completedTodos}
     totalTodos={totalTodos}
     searchValue={searchValue}
