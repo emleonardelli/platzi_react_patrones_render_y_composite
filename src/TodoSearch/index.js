@@ -4,6 +4,7 @@ import './TodoSearch.css';
 function TodoSearch({
   searchValue,
   setSearchValue,
+  loading
 }) {
   const onSearchValueChange = (ev) => {
     setSearchValue(ev.target.value);
@@ -16,6 +17,7 @@ function TodoSearch({
       className="TodoSearch"
       placeholder="Cebolla"
       value={searchValue}
+      disabled={!!loading}
     />
   );
 }
