@@ -1,5 +1,6 @@
 import React from 'react';
 import { withStorageListener } from './withStorageListener';
+import './ChangeAlert.css';
 
 function ChangeAlert({
   show,
@@ -8,7 +9,7 @@ function ChangeAlert({
   if (!show) return null;
   if (show) {
     return (
-      <div>
+      <div className="ChangeAlert">
         <p>Hubo Cambios</p>
         <button
           onClick={() => toggleShow()}
